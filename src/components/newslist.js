@@ -1,6 +1,7 @@
 import { Box, Button, List, ListItem, ListItemText } from "@mui/material";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { v4 as uuidv4 } from 'uuid';
 import ".././styles.css"
 
 
@@ -27,17 +28,20 @@ function ListOfNews() {
 
   const getData = async () => {
     try {
-      const connection = await fetch("https://content.guardianapis.com/search?api-key=7bd623d2-2af3-40af-a0cf-bbef379c31bc");
+      const connection = await fetch(`https://newsapi.org/v2/everything?q=keyword&apiKey=79a9d97c37354ae28611d0575a023529`);
       const apiData = await connection.json();
-
-      const news = apiData.response.results.map((article) => {
+      
+      const news = apiData.articles.map((article) => {
         const articleData = {
-          title: article.webTitle,
-          date: formatDate(article.webPublicationDate),
-          link: article.webUrl,
-          id: article.id
+          title: article.title,
+          date: formatDate(article.publishedAt),
+          description: article.description,
+          content: article.content,
+          link: article.url,
+          image: article.urlToImage,
+          key: uuidv4()
         };
-        console.log(apiData)
+
         return articleData;
       });
 
@@ -47,8 +51,13 @@ function ListOfNews() {
     }
   }
 
-
-
+  const sortedNews = data.news.sort((a, b) => {
+    const dateA = new Date(a.date);
+    const dateB = new Date(b.date);
+    if (dateA > dateB) return -1;
+    if (dateA < dateB) return 1;
+    return 0;
+  });
 
   useEffect(() => {
 
@@ -61,17 +70,18 @@ function ListOfNews() {
       <Box sx={{ width: '100%', maxWidth: 700, }}>
         <Button variant="outlined" onClick={getData}>Päivitä</Button>
         <List>
-          {data.news.map((article, index) => (
-            <Link key={article.id}
-              to= "/articleview"
-                state = {{article:article}} 
-                
+          {sortedNews.map((article, index) => (
+            <Link key={article.key}
+              to="/articleview"
+              state={{ article: article }}
+              style={{ textDecoration: "none", underline: "none", color: 'inherit', backgroundColor: "none", }}
+            
             >
               <ListItem
                 button
-                key={article.id}
+                key={article.key}
                 className={`list-item ${index % 2 === 0 ? 'light' : ''}`}
-                >
+              >
                 <ListItemText primary={article.title} secondary={article.date} />
               </ListItem>
             </Link>
