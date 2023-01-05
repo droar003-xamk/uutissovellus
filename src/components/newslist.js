@@ -37,16 +37,17 @@ function ListOfNews() {
           link: article.webUrl,
           id: article.id
         };
+        console.log(apiData)
         return articleData;
       });
-      
+
       setData({ news });
     } catch (error) {
       console.error(error);
     }
   }
 
-  
+
 
 
   useEffect(() => {
@@ -61,14 +62,18 @@ function ListOfNews() {
         <Button variant="outlined" onClick={getData}>Päivitä</Button>
         <List>
           {data.news.map((article, index) => (
-            <Link key={article.id}>
-            <ListItem
-              button
-              key={article.id}
-              className={`list-item ${index % 2 === 0 ? 'light' : ''}`}
-              onClick={() => console.log("")}>
-              <ListItemText primary={article.title} secondary={article.date} />
-            </ListItem>
+            <Link key={article.id}
+              to= "/articleview"
+                state = {{article:article}} 
+                
+            >
+              <ListItem
+                button
+                key={article.id}
+                className={`list-item ${index % 2 === 0 ? 'light' : ''}`}
+                >
+                <ListItemText primary={article.title} secondary={article.date} />
+              </ListItem>
             </Link>
           ))}
         </List>
