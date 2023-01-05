@@ -1,5 +1,6 @@
 .List{
     text-align: center;
+    
 }
 .list-item:nth-child(2n+1) {
     background-color: rgb(251, 251, 251);

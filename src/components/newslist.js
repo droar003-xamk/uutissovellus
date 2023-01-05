@@ -1,5 +1,6 @@
-import { Box, List, ListItem, ListItemText } from "@mui/material";
+import { Box, Button, List, ListItem, ListItemText } from "@mui/material";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import ".././styles.css"
 
 
@@ -11,14 +12,14 @@ function ListOfNews() {
     news: []
   });
 
-  const formatDate = (date) => {  
+  const formatDate = (date) => {
 
     const formats = {
       hour: 'numeric',
-    minute: 'numeric',
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric'
+      minute: 'numeric',
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric'
     };
     const formatter = new Intl.DateTimeFormat("en-GB", formats);
     return formatter.format(new Date(date));
@@ -33,21 +34,19 @@ function ListOfNews() {
         const articleData = {
           title: article.webTitle,
           date: formatDate(article.webPublicationDate),
-          link: article.webUrl
+          link: article.webUrl,
+          id: article.id
         };
-        if (article.fields && article.fields.thumbnail) {
-          articleData.image = article.fields.thumbnail;
-        }
         return articleData;
       });
-
+      
       setData({ news });
     } catch (error) {
       console.error(error);
     }
   }
 
-  console.log(data);
+  
 
 
   useEffect(() => {
@@ -58,16 +57,19 @@ function ListOfNews() {
 
   return (
     <div className="List">
-      <Box sx={{ width: '100%', maxWidth: 700, bgcolor: 'rgb(228, 230, 230)' }}>
+      <Box sx={{ width: '100%', maxWidth: 700, }}>
+        <Button variant="outlined" onClick={getData}>Päivitä</Button>
         <List>
-          {data.news.map((article,index) => (
-            <ListItem 
-            button
-            key={article.date}
-            className={`list-item ${index % 2 === 0 ? 'light' : ''}`}
-            onClick={() => console.log("")}>
+          {data.news.map((article, index) => (
+            <Link key={article.id}>
+            <ListItem
+              button
+              key={article.id}
+              className={`list-item ${index % 2 === 0 ? 'light' : ''}`}
+              onClick={() => console.log("")}>
               <ListItemText primary={article.title} secondary={article.date} />
             </ListItem>
+            </Link>
           ))}
         </List>
       </Box>

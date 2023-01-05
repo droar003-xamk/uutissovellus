@@ -1,14 +1,18 @@
-import { Container } from '@mui/material';
+import {Route, Routes,} from "react-router-dom";
 import './App.css';
-import Header from './components/header';
-import ListOfNews from './components/newslist';
+import FrontPage from './components/frontPage';
+import ArticleView from './components/articleview';
 
 function App() {
   return (
-    <Container maxWidth="sm">
-    <Header/>
-    <ListOfNews/>
-    </Container>
+    <>
+
+      <Routes>
+        <Route path="/" element={<FrontPage />} />
+        <Route path="/newslist" element={<ArticleView />}/>
+      </Routes>
+
+    </>
   );
 }
 
