@@ -1,4 +1,4 @@
-import { Box, Button, Container, List, ListItem, ListItemText } from "@mui/material";
+import { Backdrop, Box, Button, CircularProgress, Container, List, ListItem, ListItemText, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { v4 as uuidv4 } from 'uuid';
@@ -10,11 +10,13 @@ import LanguageSelector from "./countryselector";
 function ListOfNews() {
 
   const [country, setCountry] = useState('us');
+  const [loading, setLoading] = useState(true);
 
-  
   const [data, setData] = useState({
 
-    news: []
+    news: [],
+    error: null,
+    
   });
 
   const formatDate = (date) => {
@@ -31,10 +33,11 @@ function ListOfNews() {
   }
 
   const getData = async () => {
+    setLoading(true);
     try {
       const connection = await fetch(`https://newsapi.org/v2/top-headlines?country=${country}&apiKey=79a9d97c37354ae28611d0575a023529`);
       const apiData = await connection.json();
-      
+
       const news = apiData.articles.map((article) => {
         const articleData = {
           title: article.title,
@@ -43,16 +46,22 @@ function ListOfNews() {
           content: article.content,
           link: article.url,
           image: article.urlToImage,
-          key: uuidv4()
+          key: uuidv4(),
+          
         };
-        
+
         return articleData;
       });
 
       setData({ news });
     } catch (error) {
-      console.error(error);
+
+      setData({
+        ...data,
+        error: "No connection to server"
+      });
     }
+    setLoading(false);
   }
   const sortedNews = data.news.sort((a, b) => {
     const dateA = new Date(a.date);
@@ -67,40 +76,55 @@ function ListOfNews() {
 
     getData();
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (
-    <div className="newsList" >
-    <Container >
-      <Box  sx={{ width: '100%', maxWidth: 700, }}>
-        <div style={{display:"flex", alignItems:"center", justifyContent:"center"}}>
-        <LanguageSelector setLanguage={setCountry} language={country}/>
-        <Button variant="outlined" onClick={getData}>Update news</Button>
-        </div>
-        <List>
-       
-          {sortedNews.map((article, index) => (
-            <Link key={article.key}
-              to="/articleview"
-              state={{ article: article }}
-              style={{ textDecoration: "none", underline: "none", color: 'inherit', backgroundColor: "none", }}
-            
-            >
-              <ListItem
-                button
-                key={article.key}
-                className={`list-item ${index % 2 === 0 ? 'light' : ''}`}
-              >
-                <ListItemText primary={article.title} secondary={article.date} />
-              </ListItem>
-            </Link>
-          ))}
-        </List>
-      </Box>
-      
-    </Container>
-   </div> 
+    <div className="newsList">
+      <Container >
+        <Box sx={{ width: '100%', maxWidth: 700, }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <LanguageSelector setLanguage={setCountry} language={country} />
+            <Button variant="outlined" onClick={getData}>Update news</Button>
+          </div>
+
+          {(data.error)
+            ?
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <Typography color="error">
+                {data.error}
+              </Typography>
+            </div>
+            : 
+            <>
+              <List>
+                {sortedNews.map((article, index) => (
+                  <Link key={article.key}
+                    to="/articleview"
+                    state={{ article: article }}
+                    style={{ textDecoration: "none", underline: "none", color: 'inherit', backgroundColor: "none", }}
+                  >
+                    <ListItem
+                      button
+                      key={article.key}
+                      className={`list-item ${index % 2 === 0 ? 'light' : ''}`}
+                    >
+                      <ListItemText primary={article.title} secondary={article.date} />
+                    </ListItem>
+                  </Link>
+                ))}
+              </List>
+              
+              <Backdrop open={loading}>
+                <CircularProgress color="inherit" />
+              </Backdrop>
+            </>  
+          }
+        </Box>
+
+
+      </Container>
+    </div>
   );
 }
 
