@@ -2,11 +2,35 @@
     text-align: center;
     
 }
+.Header{
+  display: flex;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  height: 12vh;
+  background: rgb(154,128,16);
+  background: linear-gradient(90deg, rgba(154,128,16,1) 0%, rgba(99,181,160,1) 49%, rgba(0,212,255,1) 100%); 
+  
+}
+
+.newsList{
+  margin-top: 6%;
+}
 .Link{
   text-decoration: none;
 }
-.list-item{
-  padding: 20;
+.img {
+  max-width: 50%;
+  height: auto;
+}
+.box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.MuiCardActions-root{
+  display: flex;
+  justify-content: space-between;
 }
 .list-item:nth-child(2n+1) {
     background-color: rgb(251, 251, 251);
@@ -14,4 +38,12 @@
   
   .list-item:nth-child(2n) {
     background-color: rgb(243, 243, 243);
+  }
+
+  @media screen and (max-width: 600px)  {
+
+    .img {
+      max-width: 20%;
+      max-height:20% ;
+    }
   }

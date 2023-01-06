@@ -1,7 +1,12 @@
+import { Typography } from "@mui/material";
+import ".././styles.css"
+
 function Header() {
     return (
-      <div className="App">
-        <h1>Viimeisimmät uutiset sivulta Guardian tänään</h1>
+      <div className="Header">
+        <Typography gutterBottom variant="h4" component="div" 
+        style={{ color: "white",  }}>
+          Top news from world</Typography>
       </div>
     );
   }

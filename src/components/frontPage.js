@@ -4,10 +4,12 @@ import ListOfNews from "./newslist";
 
 function FrontPage() {
     return (
-        <Container maxWidth="sm">
+        <>
         <Header/>
+        <Container maxWidth="sm">
         <ListOfNews/>
         </Container>
+      </>  
     );
   }
   
